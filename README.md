@@ -6,6 +6,7 @@ This project implements an end-to-end Data Quality CI/CD Pipeline designed to au
 The pipeline is triggered automatically on every code push to ensure that data quality is maintained throughout the development lifecycle.
 
 graph TD
+
     A[Amazon Sale Report.csv] --> B{GitHub Actions CI}
     B --> C[gx_validation.py - Great Expectations]
     B --> D[pydantic_check.py - Pydantic]
