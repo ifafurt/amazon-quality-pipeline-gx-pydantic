@@ -1,0 +1,6 @@
+# Hassas bilgiler
+.env
+
+# Python kalıntıları
+__pycache__/
+*.py[cod]

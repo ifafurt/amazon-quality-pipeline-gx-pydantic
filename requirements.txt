@@ -1,0 +1,5 @@
+great-expectations
+pandas
+pydantic
+requests
+python-dotenv
