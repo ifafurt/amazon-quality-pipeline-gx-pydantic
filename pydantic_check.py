@@ -24,7 +24,7 @@ class AmazonOrderModel(BaseModel):
     @classmethod
     def validate_currency(cls, v):
         if v != "INR":
-            raise ValueError(f"Geçersiz para birimi: {v}. Sadece INR kabul edilir.")
+            raise ValueError(f"Invalid currency: {v}. Only INR is accepted.")
         return v
 
     # ÖDEV KURALI: Ülke sadece "IN" olmalı
@@ -32,7 +32,7 @@ class AmazonOrderModel(BaseModel):
     @classmethod
     def validate_country(cls, v):
         if v != "IN":
-            raise ValueError(f"Geçersiz ülke: {v}. Sadece IN kabul edilir.")
+            raise ValueError(f"Invalid country: {v}. Only IN is accepted.")
         return v
 
 # 2. VERİYİ YÜKLE
@@ -41,7 +41,7 @@ df = pd.read_csv("Amazon Sale Report.csv", low_memory=False)
 valid_rows = []
 invalid_rows = []
 
-print("Satır bazlı doğrulama başlıyor...")
+print("Starting row-level validation...")
 
 # 3. SATIRLARI DÖNGÜYE AL VE KONTROL ET
 for index, row in df.iterrows():
@@ -61,16 +61,20 @@ for index, row in df.iterrows():
 pd.DataFrame(valid_rows).to_csv("valid_rows.csv", index=False)
 pd.DataFrame(invalid_rows).to_csv("invalid_rows.csv", index=False)
 
-print(f"İşlem bitti!")
-print(f"✅ Temiz satır sayısı: {len(valid_rows)}")
-print(f"❌ Hatalı satır sayısı: {len(invalid_rows)}")
+print(f"Validation process completed!")
+print(f"✅ Valid rows count: {len(valid_rows)}")
+print(f"❌ Invalid rows count: {len(invalid_rows)}")
 
 # 5. SLACK BİLDİRİMİ (Eğer hata varsa)
 if invalid_rows:
     load_dotenv()
     webhook_url = os.getenv("webhook_url")
     if not webhook_url:
-        print("❌ .env dosyasında webhook_url tanımlanmamış!")
-        sys.exit(1)
-    msg = f"⚠️ *Pydantic Uyarısı:* {len(invalid_rows)} satır veri kalitesi testinden geçemedi ve ayıklandı."
-    requests.post(webhook_url, json={"text": msg})
+        print("ℹ️ Info: webhook_url is not defined in .env or Secrets, skipping Slack notification.")
+    else:
+        msg = f"⚠️ *Pydantic Alert:* {len(invalid_rows)} rows failed data quality validation and were extracted."
+        try:
+            requests.post(webhook_url, json={"text": msg})
+            print("Slack alert sent.")
+        except Exception as error:
+            print(f"Could not send Slack alert: {error}")

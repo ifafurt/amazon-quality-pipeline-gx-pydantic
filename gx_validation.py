@@ -41,49 +41,57 @@ allowed_statuses = ["Cancelled", "Shipped", "Shipped - Delivered to Buyer", "Pen
 suite.add_expectation(gx.expectations.ExpectColumnValuesToBeInSet(column="Status", value_set=allowed_statuses))
 
 # 6. VALIDASYON TANIMI
-validation_def = context.validation_definitions.add(
+validation_definition = context.validation_definitions.add(
     gx.ValidationDefinition(name="amazon_validation", data=batch_definition, suite=suite)
 )
 
 # 7. ÇALIŞTIR
-print("Validasyon hesaplanıyor...")
-result = validation_def.run(batch_parameters={"dataframe": df})
+print("Calculating validation...")
+validation_result = validation_definition.run(batch_parameters={"dataframe": df})
 
 # 8. SONUÇLARI TERMİNALDE GÖSTER (Düzeltilmiş Kısım)
 print("\n" + "="*50)
-print(f"VERİ KALİTESİ SONUCU: {'✅ BAŞARILI' if result.success else '❌ HATALI'}")
+print(f"DATA QUALITY RESULT: {'✅ SUCCESS' if validation_result.success else '❌ FAILED'}")
 print("="*50)
 
-if not result.success:
-    print("\nDetaylı Hata Listesi:")
-    for res in result.results:
+if not validation_result.success:
+    print("\nDetailed Error List:")
+    for res in validation_result.results:
         if not res.success:
             # DÜZELTME: expectation_type yerine .type kullanıyoruz
             rule = res.expectation_config.type 
-            col = res.expectation_config.kwargs.get("column")
-            err_count = res.result.get("unexpected_count", 0)
-            print(f"- {col} sütununda '{rule}' kuralı ihlal edildi. (Hatalı Satır Sayısı: {err_count})")
+            column_name = res.expectation_config.kwargs.get("column")
+            unexpected_count = res.result.get("unexpected_count", 0)
+            print(f"- Column '{column_name}' failed rule '{rule}'. (Unexpected Count: {unexpected_count})")
 print("="*50)
 
 # 9. SLACK BİLDİRİMİ
-def send_slack(res):
+def send_slack_notification(result_data):
     load_dotenv()
     webhook_url = os.getenv("webhook_url")
+    
     if not webhook_url:
-        print("❌ .env dosyasında webhook_url tanımlanmamış!")
-        sys.exit(1)
-    stats = res.statistics
-    msg = f"""
-*📊 Veri Kalitesi Özeti (Homework 1):* {'✅ BAŞARILI' if res.success else '❌ HATALI'}
-- *Toplam Kontrol:* {stats['evaluated_expectations']}
-- *Başarılı:* {stats['successful_expectations']}
-- *Hatalı:* {stats['unsuccessful_expectations']}
-- *Başarı Oranı:* %{stats['success_percent']:.2f}
-    """
-    try:
-        requests.post(webhook_url, json={"text": msg})
-        print("\nSlack bildirimi başarıyla gönderildi.")
-    except:
-        print("\nSlack URL'i eksik veya hatalı, bildirim atlanıyor.")
+        print("ℹ️ Info: webhook_url is not defined in .env or Secrets, skipping Slack notification.")
+        return # Pipeline'ın çökmemesi için sys.exit(1) yerine return kullandım
 
-send_slack(result)
+    stats = result_data.statistics
+    status_msg = '✅ SUCCESS' if result_data.success else '❌ FAILED'
+    
+    msg = f"""
+*📊 Data Quality Summary (Homework 1):* {status_msg}
+- *Total Checks:* {stats['evaluated_expectations']}
+- *Successful:* {stats['successful_expectations']}
+- *Failed:* {stats['unsuccessful_expectations']}
+- *Success Rate:* {stats['success_percent']:.2f}%
+    """
+    
+    try:
+        response = requests.post(webhook_url, json={"text": msg})
+        if response.status_code == 200:
+            print("\nSlack notification sent successfully.")
+        else:
+            print(f"\nSlack returned an error: {response.status_code}")
+    except Exception as e:
+        print(f"\nFailed to send Slack notification: {e}")
+
+send_slack_notification(validation_result)
