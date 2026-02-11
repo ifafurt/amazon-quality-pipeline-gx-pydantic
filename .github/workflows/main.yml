@@ -28,7 +28,7 @@ jobs:
     - name: Run Great Expectations (HW1)
       env:
         webhook_url: ${{ secrets.webhook_url }}
-      run: python df.py
+      run: python gx_validation.py
 
     - name: Run Pydantic Check (HW2)
       env:
