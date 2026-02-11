@@ -27,10 +27,10 @@ jobs:
 
     - name: Run Great Expectations (HW1)
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        webhook_url: ${{ secrets.webhook_url }}
       run: python df.py
 
     - name: Run Pydantic Check (HW2)
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        webhook_url: ${{ secrets.webhook_url }}
       run: python pydantic_check.py
