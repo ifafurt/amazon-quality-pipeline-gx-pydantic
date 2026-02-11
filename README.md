@@ -1,0 +1,1 @@
+# amazon-quality-pipeline-gx-pydantic
