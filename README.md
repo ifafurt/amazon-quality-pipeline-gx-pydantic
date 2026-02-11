@@ -9,10 +9,13 @@ graph TD
     A[Amazon Sale Report.csv] --> B{GitHub Actions CI}
     B --> C[gx_validation.py - Great Expectations]
     B --> D[pydantic_check.py - Pydantic]
+    
     C --> E{Validation Failed?}
     D --> E
+    
     E -- Yes --> F[Generate invalid_rows.csv]
     E -- Yes --> G[Send Slack Notification]
+    
     E -- No --> H[Pipeline Success]
 
 
