@@ -1,4 +1,8 @@
-# amazon-quality-pipeline-gx-pydantic
+#🚀 Amazon Sales Data Quality Pipeline
+This project implements an end-to-end Data Quality CI/CD Pipeline designed to automate validation checks for Amazon sales datasets. It ensures data integrity using industry-standard tools and provides real-time alerts via Slack.
+
+🏗️ Architecture
+The pipeline is triggered automatically on every code push to ensure that data quality is maintained throughout the development lifecycle.
 
 
 
