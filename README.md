@@ -1,7 +1,7 @@
 # Amazon Sales Data Quality Pipeline🚀
 
 This project implements an end-to-end Data Quality CI/CD Pipeline designed to automate validation checks for Amazon sales datasets. It ensures data integrity using industry-standard tools and provides real-time alerts via Slack.
----
+
 🏗️ Architecture
 The pipeline is triggered automatically on every code push to ensure that data quality is maintained throughout the development lifecycle.
 
@@ -33,7 +33,8 @@ GitHub Actions: Automated CI pipeline execution.
 Slack API: Instant team notifications and alerting.
 
 📋 Key Features
-1. Data Validation (Great Expectations)
+
+#1. Data Validation (Great Expectations)
 The gx_validation.py script enforces critical business rules:
 
 Uniqueness: Ensures Order ID contains no duplicates.
@@ -42,14 +43,14 @@ Consistency: Validates that the Status column only contains allowed categories (
 
 Completeness: Detects unexpected null values in mandatory fields.
 
-2. Schema Enforcement (Pydantic)
+#2. Schema Enforcement (Pydantic)
 pydantic_check.py performs row-level validation to ensure:
 
 Correct data types for every column.
 
 All failed rows are automatically exported to invalid_rows.csv for further auditing.
 
-3. Automated CI/CD
+#3. Automated CI/CD
 Powered by GitHub Actions, the workflow:
 
 Provisions a clean Ubuntu environment.
