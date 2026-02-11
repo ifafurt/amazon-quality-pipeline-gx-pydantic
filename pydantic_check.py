@@ -65,16 +65,22 @@ print(f"Validation process completed!")
 print(f"✅ Valid rows count: {len(valid_rows)}")
 print(f"❌ Invalid rows count: {len(invalid_rows)}")
 
-# 5. SLACK BİLDİRİMİ (Eğer hata varsa)
+# 5. SLACK BİLDİRİMİ (Geliştirilmiş Versiyon)
 if invalid_rows:
     load_dotenv()
     webhook_url = os.getenv("webhook_url")
     if not webhook_url:
-        print("ℹ️ Info: webhook_url is not defined in .env or Secrets, skipping Slack notification.")
+        print("ℹ️ Info: webhook_url is not defined, skipping Slack notification.")
     else:
-        msg = f"⚠️ *Pydantic Alert:* {len(invalid_rows)} rows failed data quality validation and were extracted."
+        # Mesajı daha detaylı hale getirdik:
+        msg = (
+            f"🚀 *Pydantic Validation Report*\n"
+            f"✅ *Valid Rows:* {len(valid_rows)}\n"
+            f"❌ *Invalid Rows:* {len(invalid_rows)}\n"
+            f"⚠️ *Note:* Failed rows were exported to `invalid_rows.csv`."
+        )
         try:
             requests.post(webhook_url, json={"text": msg})
-            print("Slack alert sent.")
+            print("Detailed Slack alert sent.")
         except Exception as error:
             print(f"Could not send Slack alert: {error}")
