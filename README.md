@@ -21,7 +21,44 @@ graph TD
 
 
 
+🛠️ Tech Stack
+Python 3.11: Core programming logic.
 
+Great Expectations (GX): Rule-based data validation.
+
+Pydantic: Schema enforcement and data type validation.
+
+GitHub Actions: Automated CI pipeline execution.
+
+Slack API: Instant team notifications and alerting.
+
+📋 Key Features
+1. Data Validation (Great Expectations)
+The gx_validation.py script enforces critical business rules:
+
+Uniqueness: Ensures Order ID contains no duplicates.
+
+Consistency: Validates that the Status column only contains allowed categories (e.g., Shipped, Cancelled).
+
+Completeness: Detects unexpected null values in mandatory fields.
+
+2. Schema Enforcement (Pydantic)
+pydantic_check.py performs row-level validation to ensure:
+
+Correct data types for every column.
+
+All failed rows are automatically exported to invalid_rows.csv for further auditing.
+
+3. Automated CI/CD
+Powered by GitHub Actions, the workflow:
+
+Provisions a clean Ubuntu environment.
+
+Installs dependencies from requirements.txt.
+
+Executes validation scripts.
+
+Reports status directly to the designated Slack channel.
 
 
 
