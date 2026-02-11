@@ -1,4 +1,4 @@
-🚀# Amazon Sales Data Quality Pipeline
+# Amazon Sales Data Quality Pipeline🚀
 
 This project implements an end-to-end Data Quality CI/CD Pipeline designed to automate validation checks for Amazon sales datasets. It ensures data integrity using industry-standard tools and provides real-time alerts via Slack.
 
