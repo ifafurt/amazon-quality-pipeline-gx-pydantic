@@ -35,6 +35,7 @@ Slack API: Instant team notifications and alerting.
 📋 Key Features
 
 #1. Data Validation (Great Expectations)
+
 The gx_validation.py script enforces critical business rules:
 
 Uniqueness: Ensures Order ID contains no duplicates.
@@ -44,6 +45,7 @@ Consistency: Validates that the Status column only contains allowed categories (
 Completeness: Detects unexpected null values in mandatory fields.
 
 #2. Schema Enforcement (Pydantic)
+
 pydantic_check.py performs row-level validation to ensure:
 
 Correct data types for every column.
@@ -51,6 +53,7 @@ Correct data types for every column.
 All failed rows are automatically exported to invalid_rows.csv for further auditing.
 
 #3. Automated CI/CD
+
 Powered by GitHub Actions, the workflow:
 
 Provisions a clean Ubuntu environment.
