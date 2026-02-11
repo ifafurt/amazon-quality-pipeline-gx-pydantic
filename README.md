@@ -1,33 +1,29 @@
 # Amazon Sales Data Quality Pipeline🚀
 
 This project implements an end-to-end Data Quality CI/CD Pipeline designed to automate validation checks for Amazon sales datasets. It ensures data integrity using industry-standard tools and provides real-time alerts via Slack.
-
+---
 🏗️ Architecture
 The pipeline is triggered automatically on every code push to ensure that data quality is maintained throughout the development lifecycle.
-
-
-
-
-
-
-
-
-
-
-
 
 graph TD
     A[Amazon Sale Report.csv] --> B{GitHub Actions CI}
     B --> C[gx_validation.py - Great Expectations]
     B --> D[pydantic_check.py - Pydantic]
-    
-    C --> E{Hata Var mı?}
+    C --> E{Validation Failed?}
     D --> E
-    
-    E -- Evet --> F[invalid_rows.csv Oluştur]
-    E -- Evet --> G[Slack Bildirimi Gönder]
-    
-    E -- Hayır --> H[Pipeline Başarıyla Tamamlandı]
+    E -- Yes --> F[Generate invalid_rows.csv]
+    E -- Yes --> G[Send Slack Notification]
+    E -- No --> H[Pipeline Success]
+
+
+
+
+
+
+
+
+
+
 
 
 
